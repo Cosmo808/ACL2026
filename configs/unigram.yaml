@@ -16,7 +16,7 @@ model: &model
    roll: true
    nw: 8
    fp16: true
-#   ckpt: './output/epoch15_trainstep170000.pt'
+#   ckpt: './output/epoch17_trainstep190000_0.762.pt'
 
 boundaries: &boundaries
    boundaries_type: 'unigram'
@@ -27,7 +27,7 @@ boundaries: &boundaries
    prior: 0.2
 
 eval: &eval
-   eval_interval: 5000
+   eval_interval: 1
    eval_max_steps: 500
    eval_tgt_len: 500
    eval_total_len: 2000

@@ -271,7 +271,7 @@ class ConditionalLIFNode(neuron.LIFNode):
         else:
             spike_d = spike
 
-        self.past_v.append(self.v.clone())
+        self.past_v.append(self.v)
 
         if self.v_reset is None:
             # soft reset (optional)

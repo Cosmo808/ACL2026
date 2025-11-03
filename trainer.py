@@ -64,6 +64,7 @@ class Trainer:
             self.model.train()
         else:
             self.model.eval()
+            self.model.boundary_predictor.node.training = True
             data_iter = data_iter.get_fixlen_iter()
 
         for batch, (data, target, seq_len, boundaries_gt) in enumerate(data_iter, start=1):
@@ -196,7 +197,7 @@ class Trainer:
             ckpt = torch.load(self.args.ckpt, map_location='cuda', weights_only=False)
             self.args = ckpt['args']
             self.model_config = ckpt['model_config']
-            self.model.load_state_dict(ckpt['model_state'])
+            self.model.load_state_dict(ckpt['model_state'], strict=False)
             self.optimizer.load_state_dict(ckpt['optimizer_state'])
             self.scheduler.load_state_dict(ckpt['scheduler_state'])
             self.scaler.load_state_dict(ckpt['scaler'])
