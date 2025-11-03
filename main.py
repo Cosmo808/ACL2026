@@ -111,6 +111,7 @@ if __name__ == '__main__':
     print_once(f'world size: {get_world_size()}', args)
     init_seed(args.seed)
     np.set_printoptions(suppress=True)
+    rank = utils.distributed.sync_workers()
     print_once(f'world size: {utils.distributed.get_world_size()}', args)
 
     ###########################################################################
