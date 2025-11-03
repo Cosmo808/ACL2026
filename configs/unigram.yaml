@@ -27,7 +27,7 @@ boundaries: &boundaries
    prior: 0.2
 
 eval: &eval
-   eval_interval: 1
+   eval_interval: 5000
    eval_max_steps: 500
    eval_tgt_len: 500
    eval_total_len: 2000
@@ -47,7 +47,7 @@ train: &train
    cuda: true
    max_step: 200000
    tgt_len: 2000
-   batch_size: 4
+   batch_size: 6
    batch_chunk: 1
    log_interval: 100
 
