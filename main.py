@@ -111,9 +111,6 @@ if __name__ == '__main__':
     print_once(f'world size: {get_world_size()}', args)
     init_seed(args.seed)
     np.set_printoptions(suppress=True)
-    with utils.distributed.sync_workers() as rank:
-        if rank == 0:
-            create_exp_dir(args.work_dir, scripts_to_save=['train.py', 'LM.py'],)
     print_once(f'world size: {utils.distributed.get_world_size()}', args)
 
     ###########################################################################
