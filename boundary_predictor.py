@@ -89,7 +89,7 @@ class SNN(nn.Module):
 
             # Reset predictor loss
             reset_loss = 0.0
-            if reset_target is not None:
+            if reset_target is not None and self.reset_logits.shape == reset_target.shape:
                 reset_loss = self.loss(self.reset_logits, reset_target)
 
             # SNN membrane loss
