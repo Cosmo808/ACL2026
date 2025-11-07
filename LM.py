@@ -1,18 +1,3 @@
-# Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
 from utils.networks import *
 from shortening import downsample, upsample
 from boundary_predictor import *
@@ -20,12 +5,13 @@ from boundary_predictor import *
 
 class MemTransformerLM(nn.Module):
     def __init__(self, n_token, n_head, d_model, d_head, d_inner, dropout, dropatt, pre_lnorm, model_config,
-                 activation_function, boundaries_type, spikes_left, temp, prior):
+                 activation_function, boundaries_type, spikes_left, temp, prior, entropy):
         super(MemTransformerLM, self).__init__()
         self.n_token = n_token
         self.d_model = d_model
         self.n_head = n_head
         self.d_head = d_head
+        self.entropy = entropy
 
         self.word_emb = nn.Embedding(n_token, d_model)
         self.drop = nn.Dropout(dropout)
@@ -134,8 +120,11 @@ class MemTransformerLM(nn.Module):
             assert hidden.size(0) == target.size(0)
 
             # Entropy
-            entropy = -torch.nn.functional.log_softmax(logit, dim=-1) * torch.nn.functional.softmax(logit, dim=-1)
-            entropy = torch.sum(entropy, dim=-1)  # T x B
+            if self.entropy:
+                entropy = -torch.nn.functional.log_softmax(logit, dim=-1) * torch.nn.functional.softmax(logit, dim=-1)
+                entropy = torch.sum(entropy, dim=-1)  # T x B
+            else:
+                entropy = None
 
             # Boundary predictor loss
             if self.boundaries_type == 'entropy':

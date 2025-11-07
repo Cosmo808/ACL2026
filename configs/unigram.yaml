@@ -16,6 +16,7 @@ model: &model
    roll: true
    nw: 8
    fp16: true
+   entropy: False
 #   ckpt: './output/epoch17_trainstep190000_0.762.pt'
 
 boundaries: &boundaries

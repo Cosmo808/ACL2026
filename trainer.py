@@ -1,5 +1,6 @@
 import itertools
 import time
+import math
 from collections import defaultdict
 
 from spikingjelly.activation_based import functional
@@ -190,6 +191,10 @@ class Trainer:
                 self.train_step // self.args.eval_interval, self.train_step, (time.time() - log_start_time) / 60, loss)
             print_once(log_str, self.args)
             print_once('-' * 100, self.args)
+
+    def evaluate(self):
+        test_loss, stats_test = self.run_epoch(self.test_iter, False)
+        print_once('| End of training | test loss {:5.2f} | test bpc {:9.5f}'.format(test_loss, test_loss / math.log(2)), self.args)
 
     def load(self):
         if self.args.ckpt:

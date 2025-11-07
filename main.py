@@ -185,5 +185,4 @@ if __name__ == '__main__':
     ###########################################################################
     # Test
     ###########################################################################
-    test_loss, stats_test = trainer.run_epoch(data_iters['test'], False)
-    print_once('| End of training | test loss {:5.2f} | test bpc {:9.5f}'.format(test_loss, test_loss / math.log(2)), args)
+    trainer.evaluate()
