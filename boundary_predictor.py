@@ -85,7 +85,7 @@ class SNN(nn.Module):
                 enhanced_gt = gt | entropy_top_mask
                 reset_target = entropy_top_mask.float()  # [B, T]
 
-            bce_loss = self.loss(preds, enhanced_gt.float())
+            # bce_loss = self.loss(preds, enhanced_gt.float())
 
             # Reset predictor loss
             reset_loss = 0.0
@@ -98,7 +98,7 @@ class SNN(nn.Module):
 
             functional.reset_net(self)
             self.I = []
-            return (bce_loss + snn_loss + reset_loss) / 3.0
+            return (snn_loss + reset_loss) / 2.0
 
         elif self.bp_type in ['gumbel']:
             assert gt is None
