@@ -102,8 +102,11 @@ class Trainer:
             if training:
                 if self.args.fp16:
                     self.scaler.unscale_(self.optimizer)
-                grad_l2 = (sum(p.grad.detach().data.norm(2).item() ** 2 for p in self.model.parameters()) ** 0.5)
-                weights_l2 = (sum(p.detach().norm(2).item() ** 2 for p in self.model.parameters()) ** 0.5)
+                try:
+                    grad_l2 = (sum(p.grad.detach().data.norm(2).item() ** 2 for p in self.model.parameters()) ** 0.5)
+                    weights_l2 = (sum(p.detach().norm(2).item() ** 2 for p in self.model.parameters()) ** 0.5)
+                except AttributeError:
+                    grad_l2, weights_l2 = 0., 0.
                 stats_agg['grad_l2'].append(grad_l2)
                 stats_agg['weights_l2'].append(weights_l2)
                 torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.args.clip)
