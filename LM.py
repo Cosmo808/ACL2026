@@ -33,7 +33,7 @@ class MemTransformerLM(nn.Module):
             ])
             return layers
 
-        pre_layers, (shortened_layers, ), post_layers = eval(model_config)
+        pre_layers, (shortened_layers,), post_layers = eval(model_config)
 
         self.boundaries_type = boundaries_type
 
@@ -44,7 +44,7 @@ class MemTransformerLM(nn.Module):
             self.null_group = nn.Parameter(torch.Tensor(1, 1, d_model).zero_())
             nn.init.normal_(self.null_group)
 
-            self.layers = nn.ModuleList([create_decoder_layers(pre_layers), create_decoder_layers(shortened_layers), create_decoder_layers(post_layers),])
+            self.layers = nn.ModuleList([create_decoder_layers(pre_layers), create_decoder_layers(shortened_layers), create_decoder_layers(post_layers), ])
             self.down_ln = nn.LayerNorm(d_model)
 
             # Boundary predictor
@@ -74,6 +74,16 @@ class MemTransformerLM(nn.Module):
             total[i:] &= mask
         return total
 
+    def get_boundary_num(self, data):
+        word_emb = self.word_emb(data)
+        hidden = self.drop(word_emb)
+        hidden = self._forward(core_input=hidden, layers=self.layers[0])
+        soft_boundaries, hard_boundaries = self.boundary_predictor(hidden)
+        print(hard_boundaries.shape)
+        print(sum(hard_boundaries).item())
+        exit()
+        return hard_boundaries
+
     def forward(self, data, target, boundaries_gt):
         """
             data: T x B
@@ -100,14 +110,14 @@ class MemTransformerLM(nn.Module):
             soft_boundaries, hard_boundaries = self.boundary_predictor(hidden)
 
         # Downsampling
-        hidden = downsample(boundaries=hard_boundaries, hidden=hidden, null_group=self.null_group,)
+        hidden = downsample(boundaries=hard_boundaries, hidden=hidden, null_group=self.null_group, )
         hidden = self.down_ln(hidden)
         stats['p_ones'] = (hard_boundaries.sum() / hard_boundaries.numel()).item()
         stats['shortened_length'] = hidden.size(0)
         hidden = self._forward(core_input=hidden, layers=self.layers[1])
 
         # Upsampling
-        back_hidden = upsample(boundaries=hard_boundaries, shortened_hidden=hidden,)
+        back_hidden = upsample(boundaries=hard_boundaries, shortened_hidden=hidden, )
         hidden = back_hidden + residual
         hidden = self._forward(core_input=hidden, layers=self.layers[2])
 

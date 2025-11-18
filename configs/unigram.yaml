@@ -16,8 +16,8 @@ model: &model
    roll: true
    nw: 8
    fp16: true
-   entropy: False
-#   ckpt: './output/epoch17_trainstep190000_0.762.pt'
+   entropy: true
+   ckpt: './output/epoch26_trainstep195000_snn_v0.76504_t0.81.pt'
 
 boundaries: &boundaries
    boundaries_type: 'unigram'

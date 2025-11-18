@@ -199,16 +199,26 @@ class Trainer:
         test_loss, stats_test = self.run_epoch(self.test_iter, False)
         print_once('| End of training | test loss {:5.2f} | test bpc {:9.5f}'.format(test_loss, test_loss / math.log(2)), self.args)
 
+    def cal_SF(self):
+        # Calculate shorten factor
+        self.model.eval()
+        self.model.boundary_predictor.node.training = True
+        data_iter = self.test_iter.get_fixlen_iter()
+
+        for batch, (data, target, seq_len, boundaries_gt) in enumerate(data_iter, start=1):
+            data = data.to(self.device, non_blocking=True)
+            hard_boundaries = self.model.get_boundary_num(data)
+
     def load(self):
         if self.args.ckpt:
             print(f"Loading checkpoint from {self.args.ckpt}")
             ckpt = torch.load(self.args.ckpt, map_location='cuda', weights_only=False)
-            self.args = ckpt['args']
-            self.model_config = ckpt['model_config']
+            # self.args = ckpt['args']
+            # self.model_config = ckpt['model_config']
             self.model.load_state_dict(ckpt['model_state'], strict=False)
-            self.optimizer.load_state_dict(ckpt['optimizer_state'])
-            self.scheduler.load_state_dict(ckpt['scheduler_state'])
-            self.scaler.load_state_dict(ckpt['scaler'])
-            self.vocab = ckpt['vocab']
-            self.epoch = ckpt['epoch']
-            self.train_step = ckpt['train_step']
+            # self.optimizer.load_state_dict(ckpt['optimizer_state'])
+            # self.scheduler.load_state_dict(ckpt['scheduler_state'])
+            # self.scaler.load_state_dict(ckpt['scaler'])
+            # self.vocab = ckpt['vocab']
+            # self.epoch = ckpt['epoch']
+            # self.train_step = ckpt['train_step']

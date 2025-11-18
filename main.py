@@ -130,7 +130,7 @@ if __name__ == '__main__':
     tr_iter = corpus.get_iterator(split='train', bsz=args.batch_size, tgt_len=args.tgt_len, device=device, ext_len=0, **boundary_kwargs)
     va_iter = corpus.get_iterator(split='valid', bsz=args.eval_batch_size, tgt_len=args.eval_tgt_len, device=device, ext_len=eval_ext_len, **boundary_kwargs)
     te_iter = corpus.get_iterator(split='test', bsz=args.eval_batch_size, tgt_len=args.eval_tgt_len, device=device, ext_len=eval_ext_len, **boundary_kwargs)
-    data_iters = {'train': tr_iter, 'valid': va_iter, 'test': te_iter}
+    data_iters = {'train': tr_iter, 'valid': te_iter, 'test': va_iter}
 
     ###########################################################################
     # Prepare the model
@@ -180,6 +180,7 @@ if __name__ == '__main__':
     # Train
     ###########################################################################
     trainer = Trainer(data_iters, model, get_model_config(), optimizer, scheduler, vocab, args, scaler)
+    trainer.cal_SF()
     trainer.train()
 
     ###########################################################################
