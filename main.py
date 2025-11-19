@@ -181,6 +181,7 @@ if __name__ == '__main__':
     ###########################################################################
     trainer = Trainer(data_iters, model, get_model_config(), optimizer, scheduler, vocab, args, scaler)
     trainer.cal_SF()
+    exit()
     trainer.train()
 
     ###########################################################################

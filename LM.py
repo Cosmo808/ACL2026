@@ -1,3 +1,5 @@
+import torch
+
 from utils.networks import *
 from shortening import downsample, upsample
 from boundary_predictor import *
@@ -75,14 +77,12 @@ class MemTransformerLM(nn.Module):
         return total
 
     def get_boundary_num(self, data):
-        word_emb = self.word_emb(data)
-        hidden = self.drop(word_emb)
-        hidden = self._forward(core_input=hidden, layers=self.layers[0])
-        soft_boundaries, hard_boundaries = self.boundary_predictor(hidden)
-        print(hard_boundaries.shape)
-        print(sum(hard_boundaries).item())
-        exit()
-        return hard_boundaries
+        with torch.no_grad():
+            word_emb = self.word_emb(data)
+            hidden = self.drop(word_emb)
+            hidden = self._forward(core_input=hidden, layers=self.layers[0])
+            soft_boundaries, hard_boundaries = self.boundary_predictor(hidden)
+            return hard_boundaries.sum().item()
 
     def forward(self, data, target, boundaries_gt):
         """

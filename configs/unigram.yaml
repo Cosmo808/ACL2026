@@ -17,7 +17,7 @@ model: &model
    nw: 8
    fp16: true
    entropy: true
-   ckpt: './output/epoch26_trainstep195000_snn_v0.76504_t0.81.pt'
+   ckpt: './output/epoch20_trainstep150000_noentropy_0.80693.pt'
 
 boundaries: &boundaries
    boundaries_type: 'unigram'
@@ -48,7 +48,7 @@ train: &train
    cuda: true
    max_step: 200000
    tgt_len: 2000
-   batch_size: 6
+   batch_size: 4
    batch_chunk: 1
    log_interval: 100
 

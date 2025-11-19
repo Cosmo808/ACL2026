@@ -1,6 +1,7 @@
 import itertools
 import time
 import math
+from tqdm import tqdm
 from collections import defaultdict
 
 from spikingjelly.activation_based import functional
@@ -198,6 +199,7 @@ class Trainer:
     def evaluate(self):
         test_loss, stats_test = self.run_epoch(self.test_iter, False)
         print_once('| End of training | test loss {:5.2f} | test bpc {:9.5f}'.format(test_loss, test_loss / math.log(2)), self.args)
+        self.cal_SF()
 
     def cal_SF(self):
         # Calculate shorten factor
@@ -205,9 +207,11 @@ class Trainer:
         self.model.boundary_predictor.node.training = True
         data_iter = self.test_iter.get_fixlen_iter()
 
-        for batch, (data, target, seq_len, boundaries_gt) in enumerate(data_iter, start=1):
+        boundary_num = 0
+        for data, _, _, _ in tqdm(data_iter):
             data = data.to(self.device, non_blocking=True)
-            hard_boundaries = self.model.get_boundary_num(data)
+            boundary_num = boundary_num + self.model.get_boundary_num(data)
+        print('Boundary number:', boundary_num)
 
     def load(self):
         if self.args.ckpt:
