@@ -1,7 +1,7 @@
 text8: &text8
    dataset: wiki40b
 #   data: data/text8
-   data: data/wiki40b/fi/text8
+   data: data/wiki40b/en/text8
 
 model: &model
    d_model: 512
@@ -17,7 +17,7 @@ model: &model
    roll: true
    nw: 8
    fp16: true
-   entropy: false
+   entropy: true
 #   ckpt: './output/epoch20_trainstep150000_noentropy_0.80693.pt'
 
 boundaries: &boundaries
