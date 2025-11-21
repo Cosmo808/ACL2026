@@ -146,7 +146,7 @@ class BoundaryPredictor(nn.Module):
 
         return soft_boundaries, hard_boundaries
 
-    def calc_loss(self, preds, gt):
+    def calc_loss(self, preds, gt, entropy=None):
         # B x T
         if self.bp_type in ['entropy', 'unigram']:
             assert preds is not None and gt is not None

@@ -66,7 +66,10 @@ class Trainer:
             self.model.train()
         else:
             self.model.eval()
-            self.model.boundary_predictor.node.training = True
+            try:
+                self.model.boundary_predictor.node.training = True
+            except AttributeError:
+                pass
             data_iter = data_iter.get_fixlen_iter()
 
         for batch, (data, target, seq_len, boundaries_gt) in enumerate(data_iter, start=1):
@@ -204,7 +207,10 @@ class Trainer:
     def cal_SF(self):
         # Calculate shorten factor
         self.model.eval()
-        self.model.boundary_predictor.node.training = True
+        try:
+            self.model.boundary_predictor.node.training = True
+        except AttributeError:
+            pass
         data_iter = self.test_iter.get_fixlen_iter()
 
         boundary_num = 0
